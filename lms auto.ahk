@@ -1,4 +1,4 @@
-﻿#NoEnv
+#NoEnv
 #NoTrayIcon
 #SingleInstance Ignore
 SetWorkingDir, %A_ScriptDir%
@@ -28,60 +28,44 @@ Gui, Font,, Malgun Gothic
 Gui, Add, GroupBox, Section x10 w320 h64, 공통
 
 Gui, Add, Button, xs+12 ys+18 w60 h36 gStart, 시 작
-Gui, Add, Button, x+12 w60 h36 gSaveINI, 좌표 저장
+Gui, Add, Button, x+12 w60 h36 gSaveINI, 설정 저장
 
-Gui, Add, GroupBox, Section x10 w320 h100, 그림1
-
-Gui, Add, Text, xs+12 ys+20, 좌표1
+Gui, Add, GroupBox, Section x10 w320 h80, 스캔 영역 설정
+Gui, Add, Text, xs+12 ys+20, 좌상단 좌표
 Gui, Add, Text, x+8, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx1
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy1
-Gui, Add, Text, xs+12 y+6, 좌표2
+Gui, Add, Text, xs+12 y+6, 우하단 좌표
 Gui, Add, Text, x+8, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx2
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy2
-Gui, Add, Text, xs+12 y+6, 좌표3
-Gui, Add, Text, x+8, x
+
+Gui, Add, GroupBox, Section x10 w320 h100, 그림1 - 클릭위치 고정
+
+Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" scanfile[1]
+Gui, Add, Text, x+12 yp, 클릭 좌표
+Gui, Add, Text, xp y+6, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx3
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy3
-Gui, Add, Picture, x+4 ys+24 gReloadScript, % RefDir "\" scanfile[1]
 
 
 Gui, Add, GroupBox, Section x10 w320 h100, 그림2
-/*
-Gui, Add, Text, xs+12 ys+20, 좌표4
-Gui, Add, Text, x+8, x
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx4
-Gui, Add, Text, x+4 yp+3, y
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy4
-Gui, Add, Text, xs+12 y+6, 좌표5
-Gui, Add, Text, x+8, x
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx5
-Gui, Add, Text, x+4 yp+3, y
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy5
-Gui, Add, Text, xs+12 y+6, 좌표6
-Gui, Add, Text, x+8, x
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx6
-Gui, Add, Text, x+4 yp+3, y
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy6
-Gui, Add, Picture, x+4 ys+24 gReloadScript, % RefDir "\" scanfile[2]
-*/
-
 Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" searchfile[1]
-Gui, Add, Text, x+12 yp, 좌표보정
-Gui, Add, Text, x+8, x1
+Gui, Add, Text, x+12 yp, 클릭 좌표 보정
+Gui, Add, Text, xp y+6, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf1, 10
-Gui, Add, Text, x+4 yp+3, y1
+Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf1, 10
 
-Gui, Add, Picture, xs+12 y+12 gReloadScript, % RefDir "\" searchfile[2]
-Gui, Add, Text, x+12 yp, 좌표보정
-Gui, Add, Text, x+8, x1
+Gui, Add, GroupBox, Section x10 w320 h100, 그림3
+Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" searchfile[2]
+Gui, Add, Text, x+12 yp, 클릭 좌표 보정
+Gui, Add, Text, xp y+6, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf2, 10
-Gui, Add, Text, x+4 yp+3, y1
+Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf2, 10
 
 
@@ -191,16 +175,18 @@ WaitNext() {
 		imgFile := RefDir . "\" . searchfile[1]
 		ImageSearch, dX, dY, x_1,y_1, x_2,y_2, *10 *TransBlack %imgFile%
 		if(dX) {
-			if(lastx != (dX+xf_1) && lasty != (dY+xf_2)) {
-				lastx := dx
+			Log("Find 2-1 " . dX . " / " . dY)
+			if(lastx != (dX+xf_1) && lasty != (dY+yf_1)) {
+				lastx := cx
 				lasty := cy
-				Clik2(2, dX+xf_1, dY+xf_2)
+				Clik2(2, dX+xf_1, dY+yf_1)
 				Break
 			}
 		}
 		imgFile := RefDir . "\" . searchfile[2]
 		ImageSearch, dX, dY, x_1,y_1, x_2,y_2, *10 *TransBlack %imgFile%
 		if(dX) {
+			Log("Find 2-2 " . dX . " / " . dY)
 			Clik2(2, dX+xf_2, dY+yf_2)
 			Break
 		}
@@ -209,7 +195,7 @@ WaitNext() {
 	}
 }
 
-Clik2(n, dx, dy) {
+Clik2(n, ddx, ddy) {
 	FormatTime, timeV, Hmmss, HH:mm:ss
 	Log(" * [그림" . n . "] 발견 - " . timeV . "`r`n")
 	keyState := GetKeyState("LButton") + GetKeyState("RButton") + GetKeyState("Alt") + GetKeyState("Ctrl") + GetKeyState("Shift") + GetKeyState("RWin") + GetKeyState("LWin")
@@ -220,18 +206,18 @@ Clik2(n, dx, dy) {
 	}
 	WinGet, cWinId, ID, A
 	WinGetTitle, cWinTitle, A
-	BlockInput, MouseMove
+	BlockInput, On
 	MouseGetPos, cx, cy
 	Log("  - 현재 창 : " . cWinId . " / 마우스 : " . cx . "," . cy . "`r`n")
 	n *= 3
-	Log(" * 클릭(" . dx . "," . dy . ")`r`n")
-	Click, %dx%, %dy%
+	Log(" * 클릭(" . ddx . "," . ddy . ")`r`n")
+	Click, %ddx%, %ddy%
 	Sleep, 20
 	MouseMove, cx, cy
-	BlockInput, MouseMoveOff
+	BlockInput, Off
 	WinActivate, ahk_id %cWinId%
 	Log(" * 기존 창 / 마우스 복귀`r`n")
-	Sleep, 3000
+	Sleep, 5000
 }
 
 
@@ -246,7 +232,7 @@ Clik(n) {
 	}
 	WinGet, cWinId, ID, A
 	WinGetTitle, cWinTitle, A
-	BlockInput, MouseMove
+	BlockInput, On
 	MouseGetPos, cx, cy
 	Log("  - 현재 창 : " . cWinId . " / 마우스 : " . cx . "," . cy . "`r`n")
 	n *= 3
@@ -256,10 +242,10 @@ Clik(n) {
 	Click, %dx%, %dy%
 	Sleep, 20
 	MouseMove, cx, cy
-	BlockInput, MouseMoveOff
+	BlockInput, Off
 	WinActivate, ahk_id %cWinId%
 	Log(" * 기존 창 / 마우스 복귀`r`n")
-	Sleep, 3000
+	Sleep, 5000
 }
 
 ReportError() {
@@ -305,6 +291,12 @@ ReadINI:
 		IniRead, tempVar, % IniFile, Common, y%A_Index%, %A_Space%
 		GuiControl,, y%A_Index%, % tempVar
 	}
+	Loop, 2 {
+		IniRead, tempVar, % IniFile, Common, xf%A_Index%, %A_Space%
+		GuiControl,, xf%A_Index%, % tempVar
+		IniRead, tempVar, % IniFile, Common, yf%A_Index%, %A_Space%
+		GuiControl,, yf%A_Index%, % tempVar
+	}
 Return
 
 SaveINI:
@@ -313,6 +305,12 @@ SaveINI:
 		IniWrite, % tempVar, % IniFile, Common, x%A_Index%
 		GuiControlGet, tempVar,, y%A_Index%
 		IniWrite, % tempVar, % IniFile, Common, y%A_Index%
+	}
+	Loop, 2 {
+		GuiControlGet, tempVar,, xf%A_Index%
+		IniWrite, % tempVar, % IniFile, Common, xf%A_Index%
+		GuiControlGet, tempVar,, yf%A_Index%
+		IniWrite, % tempVar, % IniFile, Common, yf%A_Index%
 	}
 	GoSub ReadINI
 Return
