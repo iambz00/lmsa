@@ -1,3 +1,8 @@
+﻿;
+; AHK file - UTF8 + BOM
+; INI file - UTF8 (w/o BOM)
+;
+
 #NoEnv
 #NoTrayIcon
 #SingleInstance Ignore
@@ -16,8 +21,8 @@ Global hwndCtrl_Log
 
 Global lastx, lasty
 
-Global scanfile := ["gbeti_01.png"]
-Global searchfile := ["gbeti_02.png", "gbeti_03.png"]
+Global scanfile := ["01.png"]
+Global searchfile := ["02.png", "03.png", "04.png", "05.png", "06.png"]
 
 ; Gui Creation
 
@@ -25,12 +30,12 @@ Gui, New, hwndhGui MinSize ;, Resize
 
 Gui, Font,, Malgun Gothic
 
-Gui, Add, GroupBox, Section x10 w320 h64, 공통
+Gui, Add, GroupBox, Section x10 y6 w320 h64, 공통
 
 Gui, Add, Button, xs+12 ys+18 w60 h36 gStart, 시 작
 Gui, Add, Button, x+12 w60 h36 gSaveINI, 설정 저장
 
-Gui, Add, GroupBox, Section x10 w320 h80, 스캔 영역 설정
+Gui, Add, GroupBox, Section xs w320 h80, 스캔 영역 설정
 Gui, Add, Text, xs+12 ys+20, 좌상단 좌표
 Gui, Add, Text, x+8, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx1
@@ -42,35 +47,58 @@ Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx2
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy2
 
-Gui, Add, GroupBox, Section x10 w320 h100, 그림1 - 클릭위치 고정
+Gui, Add, Text, Section xs Section, 로그
+Gui, Add, Edit,  w320 r20 HwndhwndCtrl_Log ReadOnly vCtrl_Log
 
-Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" scanfile[1]
-Gui, Add, Text, x+12 yp, 클릭 좌표
-Gui, Add, Text, xp y+6, x
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx3
-Gui, Add, Text, x+4 yp+3, y
-Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy3
-
-
-Gui, Add, GroupBox, Section x10 w320 h100, 그림2
-Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" searchfile[1]
+Gui, Add, GroupBox, Section x+10 y6 w320 h80, 그림1
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" searchfile[1]
 Gui, Add, Text, x+12 yp, 클릭 좌표 보정
 Gui, Add, Text, xp y+6, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf1, 10
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf1, 10
 
-Gui, Add, GroupBox, Section x10 w320 h100, 그림3
-Gui, Add, Picture, xs+12 ys+24 gReloadScript, % RefDir "\" searchfile[2]
+Gui, Add, GroupBox, Section xs w320 h80, 그림2
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" searchfile[2]
 Gui, Add, Text, x+12 yp, 클릭 좌표 보정
 Gui, Add, Text, xp y+6, x
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf2, 10
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf2, 10
 
+Gui, Add, GroupBox, Section xs w320 h80, 그림3
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" searchfile[3]
+Gui, Add, Text, x+12 yp, 클릭 좌표 보정
+Gui, Add, Text, xp y+6, x
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf3, 10
+Gui, Add, Text, x+4 yp+3, y
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf3, 10
 
-Gui, Add, Text, Section x10 Section, 로그
-Gui, Add, Edit,  w320 r20 HwndhwndCtrl_Log ReadOnly vCtrl_Log
+Gui, Add, GroupBox, Section xs w320 h80, 그림4
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" searchfile[4]
+Gui, Add, Text, x+12 yp, 클릭 좌표 보정
+Gui, Add, Text, xp y+6, x
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf4, 10
+Gui, Add, Text, x+4 yp+3, y
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf4, 10
+
+Gui, Add, GroupBox, Section xs w320 h80, 그림5
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" searchfile[5]
+Gui, Add, Text, x+12 yp, 클릭 좌표 보정
+Gui, Add, Text, xp y+6, x
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf5, 10
+Gui, Add, Text, x+4 yp+3, y
+Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf5, 10
+
+Gui, Add, GroupBox, Section xs w320 h80, 클릭위치 고정
+
+Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" scanfile[1]
+Gui, Add, Text, x+12 yp, 클릭 좌표
+Gui, Add, Text, xp y+6, x
+Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx3
+Gui, Add, Text, x+4 yp+3, y
+Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy3
+
 
 GoSub ReadINI
 
@@ -167,32 +195,34 @@ WaitNext() {
 			Clik(1)
 			Break
 		}
-		; 그림2
-		GuiControlGet, xf_1,, xf1
-		GuiControlGet, yf_1,, yf1
-		GuiControlGet, xf_2,, xf2
-		GuiControlGet, yf_2,, yf2
-		imgFile := RefDir . "\" . searchfile[1]
-		ImageSearch, dX, dY, x_1,y_1, x_2,y_2, *10 *TransBlack %imgFile%
-		if(dX) {
-			Log("Find 2-1 " . dX . " / " . dY)
-			if(lastx != (dX+xf_1) && lasty != (dY+yf_1)) {
-				lastx := cx
-				lasty := cy
-				Clik2(2, dX+xf_1, dY+yf_1)
-				Break
-			}
-		}
-		imgFile := RefDir . "\" . searchfile[2]
-		ImageSearch, dX, dY, x_1,y_1, x_2,y_2, *10 *TransBlack %imgFile%
-		if(dX) {
-			Log("Find 2-2 " . dX . " / " . dY)
-			Clik2(2, dX+xf_2, dY+yf_2)
-			Break
-		}
+
+		SearchFile(1)
+		|| SearchFile(2, "FF00FF")
+		|| SearchFile(3)
+		|| SearchFile(4)
+		|| SearchFile(5)
 
 		Sleep, 3000
 	}
+}
+
+SearchFile(n, transColor := "Black") {
+	GuiControlGet, x_1,, x1
+	GuiControlGet, y_1,, y1
+	GuiControlGet, x_2,, x2
+	GuiControlGet, y_2,, y2
+
+	GuiControlGet, xf,, xf%n%
+	GuiControlGet, yf,, yf%n%
+
+	imgFile := RefDir . "\" . searchfile[n]
+	ImageSearch, dX, dY, x_1,y_1, x_2,y_2, *10 *Trans%transColor% %imgFile%
+	if(dX) {
+		Log("Find 2-" . n . " " . dX . " / " . dY)
+		Clik2(2, dX+xf, dY+yf)
+		return true
+	}
+	return false
 }
 
 Clik2(n, ddx, ddy) {
@@ -291,7 +321,7 @@ ReadINI:
 		IniRead, tempVar, % IniFile, Common, y%A_Index%, %A_Space%
 		GuiControl,, y%A_Index%, % tempVar
 	}
-	Loop, 2 {
+	Loop, 5 {
 		IniRead, tempVar, % IniFile, Common, xf%A_Index%, %A_Space%
 		GuiControl,, xf%A_Index%, % tempVar
 		IniRead, tempVar, % IniFile, Common, yf%A_Index%, %A_Space%
@@ -306,7 +336,7 @@ SaveINI:
 		GuiControlGet, tempVar,, y%A_Index%
 		IniWrite, % tempVar, % IniFile, Common, y%A_Index%
 	}
-	Loop, 2 {
+	Loop, 5 {
 		GuiControlGet, tempVar,, xf%A_Index%
 		IniWrite, % tempVar, % IniFile, Common, xf%A_Index%
 		GuiControlGet, tempVar,, yf%A_Index%
