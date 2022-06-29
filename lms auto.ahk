@@ -18,12 +18,13 @@ Global IniFile := RefDir . "\" . Title . ".ini"
 Global WinId
 Global hGui
 Global hwndCtrl_Log
+Global flagStop := false
 
 Global lastx, lasty
 
-Global scanfile := ["01.png"]
-Global searchfile := ["02.png", "03.png", "04.png", "05.png", "06.png"]
-
+Global scanfile := ["06.png"]
+Global searchfile := ["01.png", "02.png", "03.png", "04.png", "05.png"]
+Global loopRound := 2400
 ; Gui Creation
 
 Gui, New, hwndhGui MinSize ;, Resize
@@ -34,6 +35,7 @@ Gui, Add, GroupBox, Section x10 y6 w320 h64, 공통
 
 Gui, Add, Button, xs+12 ys+18 w60 h36 gStart, 시 작
 Gui, Add, Button, x+12 w60 h36 gSaveINI, 설정 저장
+Gui, Add, Button, x+72 w60 h36 gStop, 중 지
 
 Gui, Add, GroupBox, Section xs w320 h80, 스캔 영역 설정
 Gui, Add, Text, xs+12 ys+20, 좌상단 좌표
@@ -47,7 +49,9 @@ Gui, Add, Edit, x+2 yp-3 w36 Limit4 vx2
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit4 vy2
 
-Gui, Add, Text, Section xs Section, 로그
+Gui, Add, Progress, Section xs w320 h4 Range0-%loopRound% vLoopProgress, 0
+
+Gui, Add, Text, Section xs, 로그
 Gui, Add, Edit,  w320 r20 HwndhwndCtrl_Log ReadOnly vCtrl_Log
 
 Gui, Add, GroupBox, Section x+10 y6 w320 h80, 그림1
@@ -90,7 +94,7 @@ Gui, Add, Edit, x+2 yp-3 w36 Limit3 vxf5, 10
 Gui, Add, Text, x+4 yp+3, y
 Gui, Add, Edit, x+2 yp-3 w36 Limit3 vyf5, 10
 
-Gui, Add, GroupBox, Section xs w320 h80, 클릭위치 고정
+Gui, Add, GroupBox, Section xs w320 h80, 그림6 클릭위치 고정
 
 Gui, Add, Picture, xs+12 ys+20 gReloadScript, % RefDir "\" scanfile[1]
 Gui, Add, Text, x+12 yp, 클릭 좌표
@@ -126,17 +130,20 @@ Hotkey, e, Set
 Return
 
 Start:
-Log(Format("{1} {2} {3} {4}`r`n",xf1,yf1,xf2,yf2))
+	Log(Format("{1} {2} {3} {4}`r`n",xf1,yf1,xf2,yf2))
 	FormatTime, timeStart, Hmmss, HH:mm:ss
 	Log("`r`n   ==== START " . timeStart . " ====   `r`n")
+	flagStop := false
 
-	Loop, 1200
-	{
-			WaitNext()
-	}
+	WaitNext()
 
 	FormatTime, timeEnd, Hmmss, HH:mm:ss
 	Log("`r`n   ==== END " . timeEnd . " ====   `r`n")
+Return
+
+Stop:
+	Log("`r`n     == 중단 예약 ==   `r`n")
+	flagStop := true
 Return
 
 GetClientSize(hWnd, ByRef w := "", ByRef h := "") {
@@ -162,7 +169,12 @@ WaitNext() {
 	mlx := 0	; mouse last position
 	mly := 0
 
-	Loop, 1200 {
+	Loop, %loopRound% {
+		if (flagStop) {
+            GuiControl,, LoopProgress, %A_Index%
+			Break
+        }
+
 		; 스크린세이버 방지(20 * 3초 = 1분)
 		MouseGetPos, cx, cy
 		if(Mod(A_Index, 20) == 0) {
@@ -171,7 +183,7 @@ WaitNext() {
 				Random, rand, 0, 1
 				if (rand) {
 					cx += 1
-					cy += 1
+				cy += 1
 				} else {
 					cx -= 1
 					cy -= 1
@@ -182,7 +194,7 @@ WaitNext() {
 		mlx := cx
 		mly := cy
 
-		; 그림1
+		; 그림6
 		GuiControlGet, x_1,, x1
 		GuiControlGet, y_1,, y1
 		GuiControlGet, x_2,, x2
@@ -197,12 +209,13 @@ WaitNext() {
 		}
 
 		SearchFile(1)
-		|| SearchFile(2, "FF00FF")
+		|| SearchFile(2)
 		|| SearchFile(3)
 		|| SearchFile(4)
 		|| SearchFile(5)
 
-		Sleep, 3000
+		Sleep, 2800
+        GuiControl,, LoopProgress, %A_Index%
 	}
 }
 
