@@ -11,7 +11,7 @@ CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
 
 ; Global Vars
-Global Title := "lms auto"
+Global Title := "lmsa"
 Global RefDir := A_ScriptDir
 Global IniFile := RefDir . "\" . Title . ".ini"
 
